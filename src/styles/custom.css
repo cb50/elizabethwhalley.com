@@ -3,6 +3,7 @@ h2, h3 {
 }
 .sl-markdown-content p {
 	font-size: 1.35rem !important;
+	width:100%;
 }
 .sl-markdown-content {
 	display: flex;
