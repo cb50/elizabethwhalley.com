@@ -1,6 +1,9 @@
 h2, h3 {
 	display:none;
 }
+a {
+	text-decoration: underline;
+}
 :root,
 ::backdrop {
 	/* Colors (dark mode) */

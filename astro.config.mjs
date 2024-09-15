@@ -32,18 +32,21 @@ export default defineConfig({
               translations: {
                   fr: 'Expositions Collectives',
               },
-              autogenerate: { directory: 'group shows' },
+              autogenerate: { directory: 'group-shows' },
           },
           {
               label: 'Solo Shows',
               translations: {
                   fr: 'Expositions Solo',
               },
-              autogenerate: { directory: 'reference' },
+              autogenerate: { directory: 'solo-shows' },
           },
       ],
       }), tailwind()],
 
   output: 'server',
   adapter: vercel(),
+  redirects: {
+    '/': '/en'
+  }
 });
