@@ -41,6 +41,13 @@ export default defineConfig({
               },
               autogenerate: { directory: 'solo-shows' },
           },
+          {
+              label: 'Writing',
+              translations: {
+                  fr: 'Écrire',
+              },
+              autogenerate: { directory: 'writing' },
+          },
       ],
       }), tailwind()],
 
