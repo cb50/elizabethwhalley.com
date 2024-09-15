@@ -35,11 +35,11 @@ export default defineConfig({
               autogenerate: { directory: 'group-shows' },
           },
           {
-              label: 'Solo Shows',
+              label: 'Projects',
               translations: {
-                  fr: 'Expositions Solo',
+                  fr: 'Projets',
               },
-              autogenerate: { directory: 'solo-shows' },
+              autogenerate: { directory: 'projects' },
           },
           {
               label: 'Writing',
