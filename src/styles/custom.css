@@ -1,6 +1,22 @@
 h2, h3 {
 	display:none;
 }
+
+.sl-markdown-content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px; /* Optional: Adds space between images */
+  }
+  
+  .sl-markdown-content h4,  .sl-markdown-content img {
+	width: 100%;
+	max-width: 100%;
+	height: auto;
+  }
+
+
 a {
 	text-decoration: underline;
 }
