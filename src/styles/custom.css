@@ -1,7 +1,9 @@
 h2, h3 {
 	display:none;
 }
-
+.sl-markdown-content p {
+	font-size: 1.35rem !important;
+}
 .sl-markdown-content {
 	display: flex;
 	justify-content: center;
