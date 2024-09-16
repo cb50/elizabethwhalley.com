@@ -12,7 +12,9 @@ h2, h3 {
 	flex-wrap: wrap;
 	gap: 10px; /* Optional: Adds space between images */
   }
-  
+  .sl-markdown-content img{
+	margin-top: 1rem;
+  }
   .sl-markdown-content h4,  .sl-markdown-content img {
 	width: 100%;
 	max-width: 100%;
