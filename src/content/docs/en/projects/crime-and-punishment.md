@@ -17,4 +17,6 @@ frames the upper left of the mural.
 
 ![Dostoevsky and other members of the anti-Czarist Petrashevsky Circle in St. Petersburg were imprisoned and then subjected to a mock execution. This horrifying experience echoes in Crime and Punishment. An interpretation of B. Pokrovsky’s drawing of this event anchors the lower right corner of the mural](@assets/crime-and-punishment/2.jpg)
 
-Dostoevsky and other members of the anti-Czarist Petrashevsky Circle in St. Petersburg were imprisoned and then subjected to a mock execution. This horrifying experience echoes in Crime and Punishment. An interpretation of B. Pokrovsky’s drawing of this event anchors the lower right corner of the mural.
+Dostoevsky and other members of the anti-Czarist Petrashevsky Circle in St. Petersburg were imprisoned and then subjected to a mock execution. This horrifying experience echoes in Crime and Punishment. An interpretation of B. Pokrovsky’s drawing of this event anchors the lower right corner of the mural. 
+
+ Rodion Romanovich Raskolnikov, the main character of Crime and Punishment, is an impoverished student living in 19th century St. Petersburg.
