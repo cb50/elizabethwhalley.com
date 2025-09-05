@@ -6,7 +6,7 @@ h2, h3 {
 	min-width:90%;
 }
 .bioimg {
-	width:130px !important;
+	width:130px !important; margin-left:70px;
 }
 .sl-markdown-content p {
 	font-size: 1.35rem !important;
