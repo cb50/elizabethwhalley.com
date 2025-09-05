@@ -1,5 +1,12 @@
+
 h2, h3 {
 	display:none;
+}
+.ytv {
+	min-width:90%;
+}
+.bioimg {
+	width:130px !important;
 }
 .sl-markdown-content p {
 	font-size: 1.35rem !important;
