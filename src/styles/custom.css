@@ -1,12 +1,12 @@
 
 h2, h3 {
-	display:none;
+	/* display:none; */
 }
 .ytv {
 	min-width:90%;
 }
 .bioimg {
-	width:130px !important; margin-left:70px;
+	width:130px !important;
 }
 .sl-markdown-content p {
 	font-size: 1.35rem !important;
@@ -216,3 +216,7 @@ a {
 		--sl-mobile-toc-height: 0rem;
 	}
 }
+starlight-image-zoom-zoomable {
+    display: flex;
+	justify-content: center;
+  }
