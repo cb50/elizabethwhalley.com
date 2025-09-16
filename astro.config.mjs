@@ -34,13 +34,6 @@ export default defineConfig({
         ],
       sidebar: [
           {
-              label: 'Group Shows',
-              translations: {
-                  fr: 'Expositions Collectives',
-              },
-              autogenerate: { directory: 'group-shows' },
-          },
-          {
               label: 'Projects',
               translations: {
                   fr: 'Projets',
