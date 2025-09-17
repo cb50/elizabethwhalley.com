@@ -43,7 +43,7 @@ export default defineConfig({
           {
               label: 'Writing',
               translations: {
-                  fr: 'Écrire',
+                  fr: 'Textes',
               },
               autogenerate: { directory: 'writing' },
           },
