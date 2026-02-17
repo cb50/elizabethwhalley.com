@@ -52,7 +52,7 @@ export default defineConfig({
               autogenerate: { directory: 'writing' },
           },
       ],
-      }), tailwind()],
+      }), tailwind({ applyBaseStyles: false })],
 
   output: 'server',
   adapter: vercel(),
