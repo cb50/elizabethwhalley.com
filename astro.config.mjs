@@ -4,11 +4,11 @@ import embeds from 'astro-embed/integration';
 
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import starlightImageZoom from 'starlight-image-zoom'
+import starlightImageZoom from 'starlight-image-zoom';
 import tailwind from '@astrojs/tailwind';
 
 
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel';
 
 export const locales = {
     en: { label: 'English', lang: 'en' },
@@ -24,9 +24,13 @@ export default defineConfig({
          // Set English as the default language for this site.
          defaultLocale: 'en',
          locales,
-      social: {
-          instagram: 'https://www.instagram.com/elizabethwhalleyprojects/',
-      },
+      social: [
+        {
+          icon: 'instagram',
+          label: 'Instagram',
+          href: 'https://www.instagram.com/elizabethwhalleyprojects/',
+        },
+      ],
       plugins: [starlightImageZoom()],
       customCss: [
           // Relative path to your custom CSS file
