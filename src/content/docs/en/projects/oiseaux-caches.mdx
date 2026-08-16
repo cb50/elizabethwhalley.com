@@ -1,0 +1,53 @@
+---
+title: Oiseaux cachés
+description: An online game in which players discover ten birds of Morin-Heights, painted in their natural habitats, and listen as their songs emerge.
+sidebar:
+  order: 0
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+import counterBird from '@assets/oiseaux-caches/counter-bird.svg';
+
+![A hand-painted Laurentian habitat containing ten birds from Morin-Heights.](@assets/oiseaux-caches/habitat-artwork.webp)
+
+## Oiseaux cachés
+
+_Created in collaboration with Chris Bass_
+
+_An online game in which players discover ten birds of Morin-Heights, painted in their natural habitats, and listen as their songs emerge._
+
+<div class="oiseaux-game-link">
+  <LinkCard
+    title="Play Oiseaux cachés"
+    href="https://oiseauxcaches.elizabethwhalley.com/index.html"
+    target="_blank"
+    rel="noopener noreferrer"
+  />
+</div>
+
+## Explore the landscape
+
+Oiseaux cachés invites players to move through a hand-painted Laurentian habitat in search of ten local birds. The landscape begins in near darkness. Each click or tap brushes away part of the monochrome surface, gradually bringing its colour and details into view.
+
+![The Oiseaux cachés game with one American Bittern discovered, a patch of colour revealed, and the bird's spectrogram player open.](@assets/oiseaux-caches/gameplay-american-bittern.jpg)
+
+![A visitor plays Oiseaux cachés on a smartphone beside the installation.](@assets/oiseaux-caches/installation-view.png)
+_Installation view_
+
+## From birdsong to image
+
+Each bird call was converted into a spectrogram, turning the recording into a visual trace. The spectrum image was then refined to reduce visual clutter and bring forward the distinctive shapes, pulses, and rhythms of the bird’s voice. In the game, a playhead travels across this image as the call plays, connecting what the player hears with the pattern they see.
+
+![Spectrogram study of an American Bittern call, labelled Butor d'Amérique.](@assets/oiseaux-caches/american-bittern-spectrogram.png)
+
+![Spectrogram study of a Black-capped Chickadee call, labelled Mésange.](@assets/oiseaux-caches/black-capped-chickadee-spectrogram.png)
+
+![Spectrogram study of a Common Loon call, labelled Plongeon huard.](@assets/oiseaux-caches/common-loon-spectrogram.png)
+
+## Credits
+
+Original bird recordings sourced from [eBird](https://ebird.org/).
+
+<div class="oiseaux-counter-bird" aria-hidden="true">
+  <img src={counterBird.src} alt="" data-zoom-off />
+</div>

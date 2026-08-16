@@ -1,0 +1,53 @@
+---
+title: Oiseaux cachés
+description: Un jeu en ligne où l’on découvre dix oiseaux de Morin-Heights, peints dans leur habitat naturel, et où l’on peut écouter leurs chants.
+sidebar:
+  order: 0
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+import counterBird from '@assets/oiseaux-caches/counter-bird.svg';
+
+![Un habitat laurentien peint à la main où figurent dix oiseaux de Morin-Heights.](@assets/oiseaux-caches/habitat-artwork.webp)
+
+## Oiseaux cachés
+
+_Créé en collaboration avec Chris Bass_
+
+_Un jeu en ligne où l’on découvre dix oiseaux de Morin-Heights, peints dans leur habitat naturel, et où l’on peut écouter leurs chants._
+
+<div class="oiseaux-game-link">
+  <LinkCard
+    title="Jouer à Oiseaux cachés"
+    href="https://oiseauxcaches.elizabethwhalley.com/index.html"
+    target="_blank"
+    rel="noopener noreferrer"
+  />
+</div>
+
+## Explorez le paysage
+
+Oiseaux cachés invite les joueurs à parcourir un habitat laurentien peint à la main à la recherche de dix oiseaux de la région. Le paysage apparaît d’abord dans une quasi-obscurité. À chaque clic ou toucher de l’écran, une partie de la surface monochrome s’efface, révélant peu à peu ses couleurs et ses détails.
+
+![Écran du jeu Oiseaux cachés montrant un Butor d’Amérique découvert, une zone du paysage révélée en couleur et le lecteur audio affichant son spectrogramme.](@assets/oiseaux-caches/gameplay-american-bittern.jpg)
+
+![Une visiteuse joue à Oiseaux cachés sur un téléphone intelligent devant l’installation.](@assets/oiseaux-caches/installation-view.png)
+_Vue de l’installation_
+
+## Du chant d’oiseau à l’image
+
+Chaque enregistrement de chant d’oiseau a été converti en spectrogramme, transformant le son en un tracé visuel. Le spectrogramme a ensuite été retravaillé afin d’éliminer les éléments visuels superflus et de faire ressortir les formes, les pulsations et les rythmes propres à chaque chant. Dans le jeu, un curseur de lecture se déplace sur l’image au fil du chant, reliant ce que le joueur entend au tracé qu’il voit.
+
+![Étude spectrographique du chant d’un Butor d’Amérique, intitulée Butor d’Amérique.](@assets/oiseaux-caches/american-bittern-spectrogram.png)
+
+![Étude spectrographique du chant d’une Mésange à tête noire, intitulée Mésange.](@assets/oiseaux-caches/black-capped-chickadee-spectrogram.png)
+
+![Étude spectrographique du chant d’un Plongeon huard, intitulée Plongeon huard.](@assets/oiseaux-caches/common-loon-spectrogram.png)
+
+## Crédits
+
+Les enregistrements originaux des chants d’oiseaux proviennent d’[eBird](https://ebird.org/).
+
+<div class="oiseaux-counter-bird" aria-hidden="true">
+  <img src={counterBird.src} alt="" data-zoom-off />
+</div>

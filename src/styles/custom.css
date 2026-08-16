@@ -220,3 +220,81 @@ starlight-image-zoom-zoomable {
     display: flex;
 	justify-content: center;
   }
+
+.oiseaux-game-link {
+	width: 100%;
+}
+
+.oiseaux-game-link .sl-link-card {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 8rem;
+	padding: 1.5rem 4rem;
+}
+
+.oiseaux-game-link .sl-link-card > .sl-flex {
+	align-items: center;
+	text-align: center;
+}
+
+.oiseaux-game-link .sl-link-card a {
+	text-decoration: none;
+}
+
+.oiseaux-game-link .sl-link-card .title {
+	font-size: clamp(1.75rem, 5vw, 2.75rem);
+	font-weight: 850;
+	line-height: 1.05;
+	letter-spacing: -0.025em;
+	color: var(--sl-color-text-accent);
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+	.oiseaux-game-link .sl-link-card .title {
+		background-image:
+			linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+			url('../assets/oiseaux-caches/habitat-artwork.webp');
+		background-position: 42% 8%;
+		background-size: 220% auto;
+		background-clip: text;
+		-webkit-background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
+		-webkit-text-stroke: 0.35px color-mix(in srgb, var(--sl-color-white) 28%, transparent);
+	}
+}
+
+.oiseaux-game-link .sl-link-card > svg {
+	position: absolute;
+	top: 50%;
+	right: 1.5rem;
+	transform: translateY(-50%);
+}
+
+@media (max-width: 30rem) {
+	.oiseaux-game-link .sl-link-card {
+		min-height: 7rem;
+		padding-inline: 3rem;
+	}
+
+	.oiseaux-game-link .sl-link-card > svg {
+		right: 1rem;
+	}
+}
+
+.oiseaux-counter-bird {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	margin-top: 2.5rem;
+}
+
+.sl-markdown-content .oiseaux-counter-bird img {
+	width: clamp(4.5rem, 10vw, 7rem);
+	max-width: 100%;
+	height: auto;
+	margin: 0;
+	transform: scaleX(-1);
+}
