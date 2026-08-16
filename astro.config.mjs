@@ -1,12 +1,9 @@
 // @ts-check
 
-import embeds from 'astro-embed/integration';
-
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import starlight from '@astrojs/starlight';
 import starlightImageZoom from 'starlight-image-zoom';
-import tailwind from '@astrojs/tailwind';
-
 
 import vercel from '@astrojs/vercel';
 
@@ -17,8 +14,10 @@ export const locales = {
 
 // https://astro.build/config
 export default defineConfig({
+  markdown: {
+    processor: unified(),
+  },
   integrations: [
-    embeds(),
     starlight({
       title: 'Elizabeth Whalley',
          // Set English as the default language for this site.
@@ -42,17 +41,18 @@ export default defineConfig({
               translations: {
                   fr: 'Projets',
               },
-              autogenerate: { directory: 'projects' },
+              items: [{ autogenerate: { directory: 'projects' } }],
           },
           {
               label: 'Writing',
               translations: {
                   fr: 'Textes',
               },
-              autogenerate: { directory: 'writing' },
+              items: [{ autogenerate: { directory: 'writing' } }],
           },
       ],
-      }), tailwind({ applyBaseStyles: false })],
+      }),
+  ],
 
   output: 'server',
   adapter: vercel(),

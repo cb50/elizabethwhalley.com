@@ -2,6 +2,9 @@
   "name": "",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -10,19 +13,18 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.6",
-    "@astrojs/starlight": "^0.37.6",
-    "@astrojs/tailwind": "^6.0.2",
-    "@astrojs/vercel": "^9.0.4",
-    "astro": "^5.17.2",
-    "astro-embed": "^0.9.0",
-    "photoswipe": "^5.4.4",
-    "sharp": "^0.32.5",
-    "starlight-image-zoom": "^0.8.0",
-    "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.4"
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/markdown-remark": "^7.2.2",
+    "@astrojs/starlight": "^0.41.7",
+    "@astrojs/vercel": "^11.0.5",
+    "astro": "^7.2.2",
+    "astro-embed": "^0.13.1",
+    "starlight-image-zoom": "^0.15.0",
+    "typescript": "^6.0.3"
   },
-  "devDependencies": {
-    "@types/photoswipe": "^4.1.6"
+  "overrides": {
+    "@vercel/routing-utils": {
+      "path-to-regexp": "6.3.0"
+    }
   }
 }
