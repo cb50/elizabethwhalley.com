@@ -31,6 +31,9 @@ export default defineConfig({
         },
       ],
       plugins: [starlightImageZoom()],
+      components: {
+        MarkdownContent: './src/components/MarkdownContent.astro',
+      },
       customCss: [
           // Relative path to your custom CSS file
           './src/styles/custom.css',

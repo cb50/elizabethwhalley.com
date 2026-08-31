@@ -1,0 +1,677 @@
+---
+import config from 'virtual:starlight-image-zoom-config';
+
+const dataAttributes: DOMStringMap = {};
+if (!config.showCaptions) dataAttributes['data-hide-caption'] = '';
+---
+
+<starlight-image-zoom {...dataAttributes}>
+	<template>
+		<dialog class="starlight-image-zoom-dialog" aria-label="Image viewer">
+			<button aria-label="Close image viewer" class="starlight-image-zoom-control">
+				<svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+					<use href="#starlight-image-zoom-icon-close"></use>
+				</svg>
+			</button>
+			<figure></figure>
+		</dialog>
+	</template>
+	<svg xmlns="http://www.w3.org/2000/svg" style={{ display: 'none' }}>
+		<symbol id="starlight-image-zoom-icon-zoom" viewBox="0 0 24 24">
+			<path d="M9.79 12.79 4 18.59V17a1 1 0 0 0-2 0v4a1 1 0 0 0 .08.38 1 1 0 0 0 .54.54A1 1 0 0 0 3 22h4a1 1 0 0 0 0-2H5.41l5.8-5.79a1 1 0 0 0-1.42-1.42ZM21.92 2.62a1 1 0 0 0-.54-.54A1 1 0 0 0 21 2h-4a1 1 0 0 0 0 2h1.59l-5.8 5.79a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0L20 5.41V7a1 1 0 0 0 2 0V3a1 1 0 0 0-.08-.38Z"></path>
+		</symbol>
+		<symbol id="starlight-image-zoom-icon-close" viewBox="0 0 24 24">
+			<path d="M6.7 5.3a1 1 0 0 0-1.4 1.4l5.3 5.3-5.3 5.3a1 1 0 1 0 1.4 1.4l5.3-5.3 5.3 5.3a1 1 0 0 0 1.4-1.4L13.4 12l5.3-5.3a1 1 0 0 0-1.4-1.4L12 10.6 6.7 5.3Z"></path>
+		</symbol>
+	</svg>
+</starlight-image-zoom>
+
+<style is:global>
+	:root {
+		--starlight-image-zoom-animation-duration: 300ms;
+	}
+
+	starlight-image-zoom-zoomable {
+		display: inline-block;
+		position: relative;
+		width: 100%;
+	}
+
+	starlight-image-zoom-zoomable > :is(img, svg),
+	starlight-image-zoom-zoomable > picture img,
+	starlight-image-zoom-zoomable button {
+		cursor: zoom-in;
+	}
+
+	starlight-image-zoom-zoomable button:not(:focus):not(:focus-within) {
+		border: none;
+		clip: rect(0, 0, 0, 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		white-space: nowrap;
+		width: 1px;
+	}
+
+	.starlight-image-zoom-control {
+		background-color: var(--sl-color-bg-nav);
+		border: 2px solid var(--sl-color-gray-2);
+		border-radius: 50%;
+		display: grid;
+		height: 44px;
+		inset: 20px auto auto 20px;
+		margin-top: 0 !important;
+		padding: 10px;
+		place-items: center;
+		position: absolute;
+		width: 44px;
+	}
+
+	:is(.starlight-image-zoom-opened, .starlight-image-zoom-transition) .starlight-image-zoom-control {
+		inset: 20px 20px auto auto;
+	}
+
+	.starlight-image-zoom-source {
+		visibility: hidden;
+	}
+
+	.starlight-image-zoom-image {
+		-webkit-user-drag: none;
+		max-height: none !important;
+		max-width: none !important;
+		position: absolute;
+		touch-action: none;
+		transform-origin: 0 0;
+		user-select: none;
+		will-change: transform;
+	}
+
+	.starlight-image-zoom-image[data-zoom-mode='fit'][data-can-zoom='true'] {
+		cursor: zoom-in;
+	}
+
+	.starlight-image-zoom-image[data-zoom-mode='actual'][data-can-pan='true'] {
+		cursor: grab;
+	}
+
+	.starlight-image-zoom-image.starlight-image-zoom-dragging {
+		cursor: grabbing;
+		transition: none !important;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.starlight-image-zoom-image {
+			transition: transform var(--starlight-image-zoom-animation-duration) cubic-bezier(0.4, 0, 0.2, 1);
+		}
+	}
+</style>
+
+<style>
+	dialog {
+		background: transparent;
+		border: 0;
+		height: 100vh;
+		height: 100dvh;
+		margin: 0;
+		max-height: none;
+		max-width: none;
+		overflow: hidden;
+		padding: 0;
+		position: fixed;
+		width: 100vw;
+		width: 100dvw;
+	}
+
+	dialog::backdrop {
+		background: var(--starlight-image-zoom-backdrop-bg, var(--sl-color-black));
+		opacity: 0;
+	}
+
+	:global(.starlight-image-zoom-opened) dialog::backdrop {
+		opacity: 1;
+	}
+
+	figure {
+		height: 100%;
+		margin: 0;
+		position: relative;
+		width: 100%;
+	}
+
+	figure :global(figcaption) {
+		background-color: color-mix(in srgb, var(--sl-color-bg-nav), transparent 10%);
+		border-top: 1px solid var(--sl-color-hairline);
+		cursor: initial;
+		inset: auto 0 0 0;
+		opacity: 0;
+		padding: var(--sl-nav-pad-y) var(--sl-nav-pad-x);
+		pointer-events: auto;
+		position: absolute;
+	}
+
+	@media (prefers-reduced-transparency) {
+		figure :global(figcaption) {
+			background-color: var(--sl-color-bg-nav);
+		}
+	}
+
+	:global(.starlight-image-zoom-opened) figure :global(figcaption) {
+		opacity: 1;
+	}
+
+	button {
+		cursor: pointer;
+		opacity: 0;
+		z-index: 2;
+	}
+
+	:global(.starlight-image-zoom-opened) button {
+		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		button,
+		dialog::backdrop,
+		figure :global(figcaption) {
+			transition: opacity var(--starlight-image-zoom-animation-duration);
+		}
+	}
+</style>
+
+<script>
+	const ZOOMABLE_TAG = 'starlight-image-zoom-zoomable';
+	const DRAG_THRESHOLD = 6;
+
+	const onIdle = globalThis.requestIdleCallback ?? ((callback: IdleRequestCallback) => setTimeout(callback, 1));
+
+	if (!customElements.get('starlight-image-zoom')) {
+		customElements.define(
+			'starlight-image-zoom',
+			class StarlightImageZoom extends HTMLElement {
+				#connected = false;
+				#currentZoom?: CurrentZoom;
+				#images: ZoomableElement[] = [];
+				#previousFocus?: Element | null;
+				#template = this.querySelector('template');
+
+				#classList = {
+					dragging: 'starlight-image-zoom-dragging',
+					image: 'starlight-image-zoom-image',
+					opened: 'starlight-image-zoom-opened',
+					source: 'starlight-image-zoom-source',
+					transition: 'starlight-image-zoom-transition',
+				};
+
+				connectedCallback() {
+					if (this.#connected) return;
+					this.#connected = true;
+
+					if (document.readyState === 'loading') {
+						document.addEventListener('DOMContentLoaded', this.#initialize, { once: true });
+					} else {
+						this.#initialize();
+					}
+				}
+
+				disconnectedCallback() {
+					this.#connected = false;
+					document.removeEventListener('DOMContentLoaded', this.#initialize);
+					document.removeEventListener('click', this.#onClick);
+					window.removeEventListener('resize', this.#onResize);
+					this.#finishClose();
+				}
+
+				#initialize = () => {
+					onIdle(() => {
+						if (!this.isConnected) return;
+						this.#images = [...document.querySelectorAll<ZoomableElement>(`${ZOOMABLE_TAG} > img, ${ZOOMABLE_TAG} > picture img, ${ZOOMABLE_TAG} > svg`)];
+						if (this.#images.length === 0) return;
+
+						document.addEventListener('click', this.#onClick);
+						window.addEventListener('resize', this.#onResize);
+					});
+				};
+
+				#onClick = (event: MouseEvent) => {
+					const target = event.target;
+					if (!(target instanceof Element)) return;
+
+					if (this.#currentZoom) {
+						if (target.closest('.starlight-image-zoom-control')) {
+							event.preventDefault();
+							this.#close();
+							return;
+						}
+
+						if (target.closest('figcaption') || this.#currentZoom.zoomedImage.contains(target)) return;
+
+						this.#close();
+						return;
+					}
+
+					const zoomable = target.closest(ZOOMABLE_TAG);
+					if (!zoomable) return;
+
+					const image = zoomable.querySelector<ZoomableElement>(':scope > img, :scope > picture img, :scope > svg');
+					if (!image || !this.#images.includes(image)) return;
+
+					const clickedImage = image.contains(target);
+					const clickedButton = Boolean(target.closest('button'));
+					if (!clickedImage && !clickedButton) return;
+
+					event.preventDefault();
+					this.#open(image);
+				};
+
+				#onCancel = (event: Event) => {
+					event.preventDefault();
+					this.#close();
+				};
+
+				#onDialogKeyDown = (event: KeyboardEvent) => {
+					if (event.key !== 'Escape') return;
+					event.preventDefault();
+					this.#close();
+				};
+
+				#onResize = () => {
+					const current = this.#currentZoom;
+					if (!current) return;
+
+					const oldViewportWidth = current.viewportWidth;
+					const oldViewportHeight = current.viewportHeight;
+					const focusX = (oldViewportWidth / 2 - current.offsetX) / current.scale;
+					const focusY = (oldViewportHeight / 2 - current.offsetY) / current.scale;
+
+					this.#updateMetrics(current);
+
+					if (current.mode === 'actual' && current.canZoom) {
+						current.scale = 1;
+						current.offsetX = current.viewportWidth / 2 - focusX;
+						current.offsetY = current.viewportHeight / 2 - focusY;
+					} else {
+						current.mode = 'fit';
+						current.scale = current.fitScale;
+						this.#center(current);
+					}
+
+					this.#clamp(current);
+					this.#render(current, false);
+				};
+
+				#onWheel = (event: WheelEvent) => {
+					const current = this.#currentZoom;
+					if (!current || current.mode !== 'actual' || !this.#canPan(current)) return;
+
+					event.preventDefault();
+					const multiplier = event.deltaMode === WheelEvent.DOM_DELTA_LINE
+						? 16
+						: event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+							? current.viewportHeight
+							: 1;
+
+					current.offsetX -= event.deltaX * multiplier;
+					current.offsetY -= event.deltaY * multiplier;
+					this.#clamp(current);
+					this.#render(current, false);
+				};
+
+				#onPointerDown = (event: PointerEvent) => {
+					const current = this.#currentZoom;
+					if (!current || !event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+
+					event.preventDefault();
+					current.pointer = {
+						id: event.pointerId,
+						moved: false,
+						originX: current.offsetX,
+						originY: current.offsetY,
+						startX: event.clientX,
+						startY: event.clientY,
+					};
+					current.zoomedImage.setPointerCapture(event.pointerId);
+					current.zoomedImage.classList.add(this.#classList.dragging);
+				};
+
+				#onPointerMove = (event: PointerEvent) => {
+					const current = this.#currentZoom;
+					const pointer = current?.pointer;
+					if (!current || !pointer || pointer.id !== event.pointerId) return;
+
+					const deltaX = event.clientX - pointer.startX;
+					const deltaY = event.clientY - pointer.startY;
+					if (Math.hypot(deltaX, deltaY) >= DRAG_THRESHOLD) pointer.moved = true;
+
+					if (current.mode !== 'actual' || !this.#canPan(current)) return;
+
+					event.preventDefault();
+					current.offsetX = pointer.originX + deltaX;
+					current.offsetY = pointer.originY + deltaY;
+					this.#clamp(current);
+					this.#render(current, false);
+				};
+
+				#onPointerEnd = (event: PointerEvent) => {
+					const current = this.#currentZoom;
+					const pointer = current?.pointer;
+					if (!current || !pointer || pointer.id !== event.pointerId) return;
+
+					current.zoomedImage.classList.remove(this.#classList.dragging);
+					current.pointer = undefined;
+
+					if (!pointer.moved && event.type === 'pointerup') {
+						this.#toggleZoom(event.clientX, event.clientY);
+					}
+				};
+
+				#onKeyDown = (event: KeyboardEvent) => {
+					if (event.key !== 'Enter' && event.key !== ' ') return;
+					event.preventDefault();
+
+					const current = this.#currentZoom;
+					if (!current) return;
+					this.#toggleZoom(current.viewportWidth / 2, current.viewportHeight / 2);
+				};
+
+				#open(image: ZoomableElement) {
+					if (!this.#template || this.#currentZoom) return;
+
+					this.#previousFocus = document.activeElement;
+
+					const portal = document.createElement('div');
+					portal.append(this.#template.content.cloneNode(true));
+
+					const dialog = portal.querySelector('dialog');
+					const figure = dialog?.querySelector('figure');
+					const closeButton = dialog?.querySelector<HTMLButtonElement>('.starlight-image-zoom-control');
+					if (!dialog || !figure || !closeButton) return;
+
+					const imageRect = image.getBoundingClientRect();
+					const { clone, isSVG, naturalHeight, naturalWidth } = this.#cloneImage(image, imageRect);
+					const sourceScaleX = imageRect.width / naturalWidth;
+					const sourceScaleY = imageRect.height / naturalHeight;
+					const sourceTransform = `translate3d(${imageRect.left}px, ${imageRect.top}px, 0) scale(${sourceScaleX}, ${sourceScaleY})`;
+
+					clone.classList.add(this.#classList.image);
+					clone.style.height = `${naturalHeight}px`;
+					clone.style.left = '0';
+					clone.style.top = '0';
+					clone.style.transform = sourceTransform;
+					clone.style.width = `${naturalWidth}px`;
+					clone.setAttribute('role', 'button');
+					clone.setAttribute('tabindex', '0');
+					clone.addEventListener('dragstart', (event) => event.preventDefault());
+					clone.addEventListener('keydown', this.#onKeyDown as EventListener);
+					clone.addEventListener('pointerdown', this.#onPointerDown as EventListener);
+					clone.addEventListener('pointermove', this.#onPointerMove as EventListener);
+					clone.addEventListener('pointerup', this.#onPointerEnd as EventListener);
+					clone.addEventListener('pointercancel', this.#onPointerEnd as EventListener);
+
+					const body = {
+						overflow: document.body.style.overflow,
+						width: document.body.style.width,
+					};
+					const header = document.querySelector<HTMLElement>('header');
+					const headerPaddingInlineEnd = header?.style.paddingInlineEnd ?? '';
+					const clientWidth = document.body.clientWidth;
+
+					document.body.style.overflow = 'hidden';
+					document.body.style.width = `${clientWidth}px`;
+					header?.style.setProperty('padding-inline-end', `calc(var(--sl-nav-pad-x) + ${window.innerWidth - clientWidth}px)`);
+
+					image.classList.add(this.#classList.source);
+					figure.append(clone);
+					this.#setCaption(image.getAttribute('alt') || this.#getSVGTitle(image), figure);
+					document.body.append(portal);
+
+					const current: CurrentZoom = {
+						body,
+						canZoom: false,
+						closeButton,
+						dialog,
+						figure,
+						fitScale: 1,
+						header,
+						headerPaddingInlineEnd,
+						image,
+						isSVG,
+						mode: 'fit',
+						naturalHeight,
+						naturalWidth,
+						offsetX: 0,
+						offsetY: 0,
+						portal,
+						scale: 1,
+						sourceTransform,
+						viewportHeight: window.innerHeight,
+						viewportWidth: window.innerWidth,
+						zoomedImage: clone,
+					};
+
+					this.#updateMetrics(current);
+					current.mode = current.canZoom ? 'actual' : 'fit';
+					current.scale = current.mode === 'actual' ? 1 : current.fitScale;
+					this.#center(current);
+					this.#currentZoom = current;
+
+					dialog.addEventListener('cancel', this.#onCancel);
+					dialog.addEventListener('keydown', this.#onDialogKeyDown);
+					dialog.addEventListener('wheel', this.#onWheel, { passive: false });
+					dialog.showModal();
+					closeButton.focus({ preventScroll: true });
+
+					requestAnimationFrame(() => {
+						requestAnimationFrame(() => {
+							if (this.#currentZoom !== current) return;
+							this.#render(current, true);
+							document.body.classList.add(this.#classList.opened);
+						});
+					});
+				}
+
+				#close(disableAnimation = false) {
+					const current = this.#currentZoom;
+					if (!current || current.closing) return;
+					current.closing = true;
+
+					document.body.classList.add(this.#classList.transition);
+					document.body.classList.remove(this.#classList.opened);
+					current.zoomedImage.classList.remove(this.#classList.dragging);
+					current.zoomedImage.style.transform = current.sourceTransform;
+
+					const prefersReducedMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
+					if (disableAnimation || prefersReducedMotion) {
+						this.#finishClose();
+						return;
+					}
+
+					current.zoomedImage.addEventListener('transitionend', this.#finishClose, { once: true });
+					current.closeTimer = window.setTimeout(this.#finishClose, 450);
+				}
+
+				#finishClose = () => {
+					const current = this.#currentZoom;
+					if (!current) return;
+
+					if (current.closeTimer) window.clearTimeout(current.closeTimer);
+					document.body.classList.remove(this.#classList.opened, this.#classList.transition);
+					current.image.classList.remove(this.#classList.source);
+					current.portal.remove();
+					document.body.style.overflow = current.body.overflow;
+					document.body.style.width = current.body.width;
+					if (current.header) current.header.style.paddingInlineEnd = current.headerPaddingInlineEnd;
+					this.#currentZoom = undefined;
+
+					if (this.#previousFocus instanceof HTMLElement) {
+						this.#previousFocus.focus({ preventScroll: true });
+					}
+				};
+
+				#toggleZoom(focusViewportX: number, focusViewportY: number) {
+					const current = this.#currentZoom;
+					if (!current || !current.canZoom) return;
+
+					if (current.mode === 'actual') {
+						current.mode = 'fit';
+						current.scale = current.fitScale;
+						this.#center(current);
+					} else {
+						const imageX = (focusViewportX - current.offsetX) / current.scale;
+						const imageY = (focusViewportY - current.offsetY) / current.scale;
+						current.mode = 'actual';
+						current.scale = 1;
+						current.offsetX = focusViewportX - imageX;
+						current.offsetY = focusViewportY - imageY;
+						this.#clamp(current);
+					}
+
+					this.#render(current, true);
+				}
+
+				#updateMetrics(current: CurrentZoom) {
+					current.viewportWidth = window.innerWidth;
+					current.viewportHeight = window.innerHeight;
+					current.fitScale = Math.min(
+						current.viewportWidth / current.naturalWidth,
+						current.viewportHeight / current.naturalHeight,
+						1,
+					);
+					current.canZoom = !current.isSVG && current.fitScale < 1;
+				}
+
+				#center(current: CurrentZoom) {
+					current.offsetX = (current.viewportWidth - current.naturalWidth * current.scale) / 2;
+					current.offsetY = (current.viewportHeight - current.naturalHeight * current.scale) / 2;
+				}
+
+				#clamp(current: CurrentZoom) {
+					const width = current.naturalWidth * current.scale;
+					const height = current.naturalHeight * current.scale;
+					current.offsetX = width <= current.viewportWidth
+						? (current.viewportWidth - width) / 2
+						: Math.min(0, Math.max(current.viewportWidth - width, current.offsetX));
+					current.offsetY = height <= current.viewportHeight
+						? (current.viewportHeight - height) / 2
+						: Math.min(0, Math.max(current.viewportHeight - height, current.offsetY));
+				}
+
+				#canPan(current: CurrentZoom) {
+					return current.naturalWidth * current.scale > current.viewportWidth
+						|| current.naturalHeight * current.scale > current.viewportHeight;
+				}
+
+				#render(current: CurrentZoom, animate: boolean) {
+					if (!animate) current.zoomedImage.style.transition = 'none';
+					current.zoomedImage.style.transform = `translate3d(${current.offsetX}px, ${current.offsetY}px, 0) scale(${current.scale})`;
+					current.zoomedImage.dataset['canPan'] = String(this.#canPan(current));
+					current.zoomedImage.dataset['canZoom'] = String(current.canZoom);
+					current.zoomedImage.dataset['zoomMode'] = current.mode;
+					current.zoomedImage.setAttribute('aria-pressed', String(current.mode === 'actual'));
+					current.zoomedImage.setAttribute(
+						'aria-label',
+						current.canZoom
+							? current.mode === 'actual' ? 'Fit image to viewport' : 'View image at full size'
+							: 'Image shown at full size',
+					);
+
+					if (!animate) {
+						requestAnimationFrame(() => {
+							if (this.#currentZoom === current && !current.pointer) current.zoomedImage.style.transition = '';
+						});
+					} else {
+						current.zoomedImage.style.transition = '';
+					}
+				}
+
+				#setCaption(text: string | null, figure: HTMLElement) {
+					if (Object.hasOwn(this.dataset, 'hideCaption')) return;
+					text = text?.trim() ?? '';
+					if (text.length === 0) return;
+
+					const caption = document.createElement('figcaption');
+					caption.ariaHidden = 'true';
+					caption.textContent = text;
+					figure.append(caption);
+				}
+
+				#cloneImage(image: ZoomableElement, imageRect: DOMRect) {
+					const isSVG = image instanceof SVGElement || this.#isSVGImage(image);
+					const naturalWidth = isSVG
+						? imageRect.width
+						: image instanceof HTMLImageElement ? image.naturalWidth || imageRect.width : imageRect.width;
+					const naturalHeight = isSVG
+						? imageRect.height
+						: image instanceof HTMLImageElement ? image.naturalHeight || imageRect.height : imageRect.height;
+					const clone = image.cloneNode(true) as ZoomableElement;
+
+					clone.removeAttribute('id');
+					if (!isSVG && image instanceof HTMLImageElement && clone instanceof HTMLImageElement && image.currentSrc) {
+						clone.src = image.currentSrc;
+						clone.removeAttribute('srcset');
+						clone.removeAttribute('sizes');
+					}
+					if (image.id) clone.dataset['zoomId'] = image.id;
+
+					return { clone, isSVG, naturalHeight, naturalWidth };
+				}
+
+				#isSVGImage(image: ZoomableElement) {
+					if (!(image instanceof HTMLImageElement)) return false;
+					if (image.currentSrc.toLowerCase().endsWith('.svg')) return true;
+
+					try {
+						const url = new URL(image.currentSrc);
+						if (url.pathname !== '/_image') return false;
+						const href = url.searchParams.get('href');
+						return href?.includes('origFormat=svg') ?? false;
+					} catch {
+						return false;
+					}
+				}
+
+				#getSVGTitle(image: ZoomableElement) {
+					if (!(image instanceof SVGElement)) return null;
+					return image.querySelector('title')?.textContent?.trim() ?? null;
+				}
+			},
+		);
+	}
+
+	type ZoomableElement = HTMLImageElement | SVGElement;
+	type ZoomMode = 'actual' | 'fit';
+
+	interface CurrentZoom {
+		body: { overflow: string; width: string };
+		canZoom: boolean;
+		closeButton: HTMLButtonElement;
+		closeTimer?: number;
+		closing?: boolean;
+		dialog: HTMLDialogElement;
+		figure: HTMLElement;
+		fitScale: number;
+		header: HTMLElement | null;
+		headerPaddingInlineEnd: string;
+		image: ZoomableElement;
+		isSVG: boolean;
+		mode: ZoomMode;
+		naturalHeight: number;
+		naturalWidth: number;
+		offsetX: number;
+		offsetY: number;
+		pointer?: {
+			id: number;
+			moved: boolean;
+			originX: number;
+			originY: number;
+			startX: number;
+			startY: number;
+		};
+		portal: HTMLDivElement;
+		scale: number;
+		sourceTransform: string;
+		viewportHeight: number;
+		viewportWidth: number;
+		zoomedImage: ZoomableElement;
+	}
+</script>
