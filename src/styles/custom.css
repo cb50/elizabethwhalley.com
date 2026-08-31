@@ -298,3 +298,42 @@ starlight-image-zoom-zoomable {
 	margin: 0;
 	transform: scaleX(-1);
 }
+
+.sl-markdown-content .project-figure {
+	width: 100%;
+	margin: 1rem 0 0;
+}
+
+.sl-markdown-content .project-figure img {
+	margin: 0;
+}
+
+.sl-markdown-content .project-figure figcaption {
+	margin-top: 0.65rem;
+	color: var(--sl-color-gray-3);
+	font-size: var(--sl-text-sm);
+	line-height: 1.5;
+}
+
+.sl-markdown-content .project-figure figcaption > span {
+	display: block;
+}
+
+.sl-markdown-content .project-section {
+	width: 100%;
+	padding: 0.5rem 0 2.5rem;
+	border-bottom: 1px solid var(--sl-color-hairline-light);
+}
+
+.sl-markdown-content .project-section > h3 {
+	margin-top: 0;
+	font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.sl-markdown-content .project-section + .project-section {
+	padding-top: 1.5rem;
+}
+
+.sl-markdown-content .project-section > :last-child {
+	margin-bottom: 0;
+}
