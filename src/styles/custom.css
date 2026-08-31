@@ -221,11 +221,12 @@ starlight-image-zoom-zoomable {
 	justify-content: center;
   }
 
-.oiseaux-game-link {
+.oiseaux-game-link,
+.project-download {
 	width: 100%;
 }
 
-.oiseaux-game-link .sl-link-card {
+:is(.oiseaux-game-link, .project-download) .sl-link-card {
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -234,21 +235,27 @@ starlight-image-zoom-zoomable {
 	padding: 1.5rem 4rem;
 }
 
-.oiseaux-game-link .sl-link-card > .sl-flex {
+:is(.oiseaux-game-link, .project-download) .sl-link-card > .sl-flex {
 	align-items: center;
 	text-align: center;
 }
 
-.oiseaux-game-link .sl-link-card a {
+:is(.oiseaux-game-link, .project-download) .sl-link-card a {
 	text-decoration: none;
 }
 
-.oiseaux-game-link .sl-link-card .title {
+:is(.oiseaux-game-link, .project-download) .sl-link-card .title {
 	font-size: clamp(1.75rem, 5vw, 2.75rem);
 	font-weight: 850;
 	line-height: 1.05;
 	letter-spacing: -0.025em;
 	color: var(--sl-color-text-accent);
+}
+
+.project-download .sl-link-card .title {
+	font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+	line-height: 1.2;
+	letter-spacing: 0;
 }
 
 @supports ((background-clip: text) or (-webkit-background-clip: text)) {
@@ -266,7 +273,7 @@ starlight-image-zoom-zoomable {
 	}
 }
 
-.oiseaux-game-link .sl-link-card > svg {
+:is(.oiseaux-game-link, .project-download) .sl-link-card > svg {
 	position: absolute;
 	top: 50%;
 	right: 1.5rem;
@@ -274,12 +281,12 @@ starlight-image-zoom-zoomable {
 }
 
 @media (max-width: 30rem) {
-	.oiseaux-game-link .sl-link-card {
+	:is(.oiseaux-game-link, .project-download) .sl-link-card {
 		min-height: 7rem;
 		padding-inline: 3rem;
 	}
 
-	.oiseaux-game-link .sl-link-card > svg {
+	:is(.oiseaux-game-link, .project-download) .sl-link-card > svg {
 		right: 1rem;
 	}
 }
@@ -336,4 +343,13 @@ starlight-image-zoom-zoomable {
 
 .sl-markdown-content .project-section > :last-child {
 	margin-bottom: 0;
+}
+
+.sl-markdown-content .project-download {
+	margin-block: 0.5rem 2rem;
+}
+
+.sl-markdown-content .project-page {
+	width: 100%;
+	min-width: 0;
 }
