@@ -1,0 +1,104 @@
+---
+interface Props {
+  title: string;
+  tileSource: string;
+}
+
+const { title, tileSource } = Astro.props;
+---
+
+<figure class="deep-zoom">
+  <div
+    class="deep-zoom-canvas"
+    data-tile-source={tileSource}
+    role="region"
+    aria-label={`${title} — interactive mural viewer`}
+    tabindex="0"
+  >
+    <span class="deep-zoom-status" role="status">Loading mural…</span>
+  </div>
+  <figcaption>Drag to explore. Scroll or pinch to zoom. Use the fullscreen button for a closer look.</figcaption>
+</figure>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/openseadragon@5.0.1/build/openseadragon/openseadragon.min.js"></script>
+<script is:inline>
+  document.querySelectorAll('.deep-zoom-canvas').forEach((element) => {
+    if (element.dataset.initialized) return;
+    element.dataset.initialized = 'true';
+    const status = element.querySelector('[role="status"]');
+    const showError = () => {
+      status.textContent = 'The mural could not load. Please refresh to try again.';
+      status.hidden = false;
+    };
+    if (!window.OpenSeadragon) {
+      showError();
+      return;
+    }
+    const viewer = OpenSeadragon({
+      element,
+      tileSources: element.dataset.tileSource,
+      prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@5.0.1/build/openseadragon/images/',
+      showNavigator: true,
+      navigatorPosition: 'BOTTOM_LEFT',
+      autoHideControls: false,
+      visibilityRatio: 1,
+      constrainDuringPan: true,
+      maxZoomPixelRatio: 2,
+      gestureSettingsMouse: { clickToZoom: false, dblClickToZoom: true },
+      gestureSettingsTouch: { clickToZoom: false, dblClickToZoom: true },
+      // OpenSeadragon expands to the page when browser fullscreen is unavailable.
+      showFullPageControl: true,
+    });
+    viewer.addHandler('open', () => { status.hidden = true; });
+    viewer.addHandler('open-failed', showError);
+  });
+</script>
+
+<style>
+  .deep-zoom {
+    width: 100%;
+    margin: 1rem 0;
+  }
+
+  .deep-zoom-canvas {
+    position: relative;
+    width: 100%;
+    height: clamp(20rem, 65vh, 42rem);
+    background: #151515;
+    border: 1px solid var(--sl-color-hairline-light);
+    touch-action: none;
+  }
+
+  .deep-zoom-canvas:focus-visible {
+    outline: 2px solid var(--sl-color-text-accent);
+    outline-offset: 3px;
+  }
+
+  .deep-zoom-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    text-align: center;
+    color: #fff;
+  }
+
+  /* Keep the site's gallery image rules away from the viewer controls. */
+  .deep-zoom-canvas :global(img) {
+    width: auto;
+    max-width: none;
+    height: auto;
+    margin: 0;
+  }
+
+  .deep-zoom-canvas :global(div) {
+    margin-top: 0;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+</style>
